@@ -1,3 +1,41 @@
+var findCheapestPrice = function(n, flights, src, dest, K) {
+    let graph = buildGraph(flights, n);
+    console.log(`Graph[0]: ${graph[0]}`)
+    let min = Infinity
+    let dfs = (u = src, hops = K+1, cost = 0, seen = new Set ) => {
+        if( u === dest)
+            min = Math.min(min, cost)
+        if( u === dest || !hops )
+            return;
+        
+        seen.add(u)
+        for( let i of graph[u]){
+            if(!seen.has(i[0]) && cost+i[1] < min ){
+              dfs(i[0], hops - 1, cost + i[1], seen )
+            }
+        }
+        seen.delete(u)
+        
+    }
+    dfs();
+    return min === Infinity? -1 : min
+    
+    function buildGraph(flights, n){
+        let graph = {}
+        flights.forEach(el => {
+            graph[el[0]] = graph[el[0]]||[]
+            graph[el[0]].push([el[1], el[2]])
+        })
+        for(let i=0;i<n;i++){
+            if(!graph[i])
+                graph[i] = []
+        }
+        return graph;
+    }
+};
+
+
+
 /**
  * @param {number} n
  * @param {number[][]} flights
